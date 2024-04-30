@@ -1,0 +1,13 @@
+services:
+  express-api:
+    container_name: express-api-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./simpleAPI:/usr/src/app # ローカルをコンテナ内にマウント
+    command: sh -c "npm start"
+    ports:
+      - "3000:3000"
+    stdin_open: true 
+  
