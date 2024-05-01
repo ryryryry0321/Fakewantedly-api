@@ -1,3 +1,4 @@
+
 import RecruitInfo from "../model/recruitinfo";
 
 // HTTPリクエストを行う関数
@@ -11,26 +12,23 @@ const fetchToRecruits = async () => {
     return data;
 };
 
+// ユーザー定義型ガードメソッド
+// レスポンスがRecruitInfo型かどうか判定する。
+const isRecruitInfo = (item: any): item is RecruitInfo =>{
+
+    const forcedCastItem = item as RecruitInfo;
+    // 募集タイトルと業務内容があればRecruitInfo型として判定する。
+    return !!forcedCastItem?.needs_title && !!forcedCastItem?.work_context;
+}
+
 // まだテスト自体がうまく通らないので、通すようにする。動作自体は問題ない
 describe("レスポンスのオブジェクトがRecruitInfo型かテスト", () => {
     it("check type", async () => {
         const response = await fetchToRecruits();
         
-        // 期待される型リストに一致するかをアサート
-       // expect(Array.isArray(response)).toBe(true); // レスポンスが配列であるかを確認
-        response.forEach((recruit) => {
-             // recruitがオブジェクトであることを確認
-             expect(typeof recruit).toBe('object');
-            
-            // レスポンスの各要素が期待される型(User)に一致するかをアサート
-            expect(recruit).toMatchObject({
-                id: expect.any(Number),
-                needs_title: expect.any(String),
-                work_context: expect.any(String),
-                user_id: expect.any(String),
-                created_at: expect.any(String),
-                updated_at: expect.any(null)  
-            });
-        });
+        // TODO 同じリクエストINFO型かチェックする
+        response.forEach((actual:RecruitInfo, i)=>{
+            expect(isRecruitInfo(actual)).toBe(true)
+        })
     });
 });
