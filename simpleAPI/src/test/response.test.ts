@@ -21,7 +21,6 @@ const isRecruitInfo = (item: any): item is RecruitInfo =>{
     return !!forcedCastItem?.needs_title && !!forcedCastItem?.work_context;
 }
 
-// まだテスト自体がうまく通らないので、通すようにする。動作自体は問題ない
 describe("レスポンスのオブジェクトがRecruitInfo型かテスト", () => {
     it("check type", async () => {
         const response = await fetchToRecruits();
