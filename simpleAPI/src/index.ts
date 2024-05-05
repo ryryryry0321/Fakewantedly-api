@@ -27,7 +27,7 @@ app.get("/", (req: Request, res: Response) => {
             }
         ]
     }
-    
+
     handleResponse(res, 200, easyDoc);
 });
 
@@ -45,10 +45,11 @@ app.get("/api/v1/match", async (req: Request, res: Response) => {
 
     // 検索結果のリストのいれもの
     let resultList = await searchRecruit(query);
-    
+
     // 検索結果がなかった場合は404を返す
     if (resultList.length == 0) {
         handleResponse(res, 404, NOT_FOUND_OBJECT);
+        return
     }
 
     handleResponse(res, 200, resultList);
@@ -60,16 +61,18 @@ app.get("/api/v1/recruit/:id", async (req: Request, res: Response) => {
     const pathId = req.params.id;
 
     // path idなしか数値以外を指定した場合は500を返す
-    if(pathId == null || typeof Number(pathId) !== "number"){
-        handleResponse(res, 500, INTERNAL_SERVER_OBJECT)
+    if (pathId == null || !isNumeric(pathId)) {
+        handleResponse(res, 500, INTERNAL_SERVER_OBJECT);
+        return 
     }
 
     let resultById = await findById(Number(pathId));
 
-    if(resultById == null){
+    if (resultById == null) {
         handleResponse(res, 404, NOT_FOUND_OBJECT);
+        return 
     }
-    
+
     handleResponse(res, 200, resultById);
 });
 
@@ -85,6 +88,20 @@ app.listen(port, () => {
  * @param statusCode 
  * @param body 
  */
-const handleResponse = (res: Response, statusCode:number, body?:any)=>{
+const handleResponse = (res: Response, statusCode: number, body?: any) => {
     res.status(statusCode).send(body).json
+}
+
+/**
+ * 文字列の数値判定(正規表現ベース)
+ * 
+ * @param value  
+ * @returns true | false
+ */
+const isNumeric = (value: string): boolean => {
+    // 数値を表す正規表現
+    const numericRegex = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/;
+
+    // 正規表現でマッチするかチェック
+    return numericRegex.test(value);
 }
