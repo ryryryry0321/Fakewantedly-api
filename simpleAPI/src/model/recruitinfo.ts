@@ -1,4 +1,3 @@
-// TODO あとでこっち使う
 type RecruitInfo = {
     id: number,
     needs_title: string,

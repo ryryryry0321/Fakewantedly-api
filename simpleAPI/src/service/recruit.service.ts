@@ -3,6 +3,12 @@ import RecruitInfo from "../model/recruitinfo";
 
 const selectAll = RECRUIT_INFO_DATA_LIST;
 
+/**
+ * キーワード検索
+ * 
+ * @param keyword 募集を検索するキーワード
+ * @returns 募集情報のリスト
+ */
 export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => {
     
     // 検索結果のリストのいれもの
@@ -20,6 +26,12 @@ export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => 
     return resultList;
 }
 
+/**
+ * id別検索
+ * 
+ * @param id 募集データID
+ * @returns 募集情報(単体)
+ */
 export const findById = async (id: number): Promise<RecruitInfo> =>{
     const dataIndex = id - 1;
     return selectAll[dataIndex];
