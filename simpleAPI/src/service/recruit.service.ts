@@ -1,8 +1,10 @@
 import RECRUIT_INFO_DATA_LIST from "../data/recruitlist";
 import RecruitInfo from "../model/recruitinfo";
 
+const selectAll = RECRUIT_INFO_DATA_LIST;
+
 export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => {
-    const selectAll = RECRUIT_INFO_DATA_LIST;
+    
     // 検索結果のリストのいれもの
     let resultList: RecruitInfo[] = [];
 
@@ -16,4 +18,9 @@ export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => 
     })
 
     return resultList;
+}
+
+export const findById = async (id: number): Promise<RecruitInfo> =>{
+    const dataIndex = id - 1;
+    return selectAll[dataIndex];
 }

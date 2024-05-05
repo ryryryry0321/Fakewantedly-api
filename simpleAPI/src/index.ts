@@ -1,12 +1,11 @@
 import express, { Request, Response } from "express";
 import RECRUIT_INFO_DATA_LIST from "./data/recruitlist";
-import RecruitInfo from "./model/recruitinfo";
 import { NextFunction } from "connect";
-import { searchRecruit } from "./service/recruit.service";
+import { findById, searchRecruit } from "./service/recruit.service";
+import { INTERNAL_SERVER_OBJECT, NOT_FOUND_OBJECT } from "./constants/constantObj";
 
 const app = express();
 const port: number = 3000;
-
 
 // CORSを許可する(オリジンを許可しないと任意のクライアントからリクエストを送れない, オリジンを特定化する場合もある)
 app.use(function (req: Request, res: Response, next: NextFunction) {
@@ -24,17 +23,18 @@ app.get("/", (req: Request, res: Response) => {
             {
                 selectAll: "/api/v1/recruits",
                 searchByKeyword: "/api/v1/match?keyword=<Keyword>",
+                searchById: "/api/v1/recruit/<id>"
             }
         ]
     }
-
-    res.status(200).send(easyDoc).json
+    
+    handleResponse(res, 200, easyDoc);
 });
 
 // 募集一覧
 app.get("/api/v1/recruits", (req: Request, res: Response) => {
     const selectAll = RECRUIT_INFO_DATA_LIST;
-    res.status(200).send(selectAll).json
+    handleResponse(res, 200, selectAll);
 });
 
 // 募集検索
@@ -48,14 +48,43 @@ app.get("/api/v1/match", async (req: Request, res: Response) => {
     
     // 検索結果がなかった場合は404を返す
     if (resultList.length == 0) {
-        res.status(404).send({ code: 404, info: "data not found" }).json
-        return
+        handleResponse(res, 404, NOT_FOUND_OBJECT);
     }
 
-    res.status(200).send(resultList).json
+    handleResponse(res, 200, resultList);
+});
+
+// 募集ID別選択
+app.get("/api/v1/recruit/:id", async (req: Request, res: Response) => {
+
+    const pathId = req.params.id;
+
+    // path idなしか数値以外を指定した場合は500を返す
+    if(pathId == null || typeof Number(pathId) !== "number"){
+        handleResponse(res, 500, INTERNAL_SERVER_OBJECT)
+    }
+
+    let resultById = await findById(Number(pathId));
+
+    if(resultById == null){
+        handleResponse(res, 404, NOT_FOUND_OBJECT);
+    }
+    
+    handleResponse(res, 200, resultById);
 });
 
 // listen portの確認。
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
+
+/**
+ * レスポンスハンドリングの共通化
+ * 
+ * @param res 
+ * @param statusCode 
+ * @param body 
+ */
+const handleResponse = (res: Response, statusCode:number, body?:any)=>{
+    res.status(statusCode).send(body).json
+}
