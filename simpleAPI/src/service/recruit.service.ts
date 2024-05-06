@@ -10,7 +10,7 @@ const selectAll = RECRUIT_INFO_DATA_LIST;
  * @returns 募集情報のリスト
  */
 export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => {
-    
+
     // 検索結果のリストのいれもの
     let resultList: RecruitInfo[] = [];
 
@@ -32,7 +32,7 @@ export const searchRecruit = async (keyword: string): Promise<RecruitInfo[]> => 
  * @param id 募集データID
  * @returns 募集情報(単体)
  */
-export const findById = async (id: number): Promise<RecruitInfo> =>{
-    const dataIndex = id - 1;
-    return selectAll[dataIndex];
+export const findById = (id: number): RecruitInfo | undefined => {
+    // find メソッドは、指定した条件を満たす最初の要素を配列から返します
+    return selectAll.find((recruitInfo) => recruitInfo.id == id);
 }

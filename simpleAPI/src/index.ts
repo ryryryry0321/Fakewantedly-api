@@ -56,7 +56,7 @@ app.get("/api/v1/match", async (req: Request, res: Response) => {
 });
 
 // 募集ID別選択
-app.get("/api/v1/recruit/:id", async (req: Request, res: Response) => {
+app.get("/api/v1/recruit/:id", (req: Request, res: Response) => {
 
     const pathId = req.params.id;
 
@@ -66,9 +66,9 @@ app.get("/api/v1/recruit/:id", async (req: Request, res: Response) => {
         return 
     }
 
-    let resultById = await findById(Number(pathId));
+    let resultById = findById(Number(pathId));
 
-    if (resultById == null) {
+    if (resultById == undefined) {
         handleResponse(res, 404, NOT_FOUND_OBJECT);
         return 
     }
