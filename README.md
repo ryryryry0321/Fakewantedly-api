@@ -4,8 +4,8 @@
 # doc
 implemented basically readonly func
 - selectAll: "/api/v1/recruits"
-- searchByKeyword: "/api/v1/match?keyword=<Keyword>"
-- searchById: "/api/v1/recruit/<id>"
+- searchByKeyword: "/api/v1/match?keyword=Keyword"
+- searchById: "/api/v1/recruit/1(path val id)"
 # SetUp
 clone this repos and excute commands
 ```
